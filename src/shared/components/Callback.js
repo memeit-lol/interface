@@ -13,6 +13,9 @@ import { token } from '../reducers/authActions';
   token
 })
 export default class Callback extends Component {
+  static fetchData({store, match}) {
+    return null;
+  }
   componentWillMount() {
     let username = this.props.history.location.search.substring(1).split('&')[2].split('=')[1];
     let accesstoken = this.props.history.location.search.substring(1).split('&')[0].split('=')[1];

@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import routes from "../shared/routes";
 import store from "../shared/store";
 import { CookiesProvider } from 'react-cookie';
+import "./MemeitGen";
 
 hydrate(
   <Provider store={store}>

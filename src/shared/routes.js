@@ -2,6 +2,7 @@ import Layout from "./components/Layout";
 import Feed from "./components/Feed";
 import Callback from "./components/Callback";
 import Single from "./components/Single";
+import Editor from "./components/Editor";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
       {
         path: "/@:author/:permlink",
         component: Single
+      },
+      {
+        path: "/write",
+        exact: true,
+        component: Editor
       }
     ]
   }

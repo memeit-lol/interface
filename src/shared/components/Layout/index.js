@@ -29,6 +29,9 @@ import icon from "./icon.png";
   }
 )
 export default class App extends Component {
+  static fetchData({store, match}) {
+    return null;
+  }
   login() {
     window.location = sc2.getLoginURL();
   }
@@ -76,6 +79,7 @@ export default class App extends Component {
     let menu = this.props.app.isLogged ? (
       <Menu theme='dark' defaultSelectedKeys={[]} style={{ lineHeight: '64px' }}>
         <Menu.Item key='1' onClick={this.logout.bind(this)}>Logout</Menu.Item>
+        <Menu.Item key='2' onClick={() => this.props.history.push('/write')}>Editor</Menu.Item>
       </Menu>
     ) : (
       <Menu theme='dark' defaultSelectedKeys={[]} style={{ lineHeight: '64px' }}>
