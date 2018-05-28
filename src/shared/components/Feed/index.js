@@ -1,13 +1,7 @@
 import React, {
   Component
 } from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  login,
-  logout
-} from '../../reducers/authActions';
 import sc2, { vote } from '../../sc2';
 import { withCookies } from 'react-cookie';
 import axios from 'axios';
@@ -16,8 +10,12 @@ import InfiniteScroll from 'react-infinite-scroller';
 import PostPreview from '../PostPreview';
 import Loader from '../Loader';
 import { message } from 'antd';
+import {Helmet} from "react-helmet";
 
-class App extends Component {
+@connect(state => ({
+  app: state.app
+}))
+export default class Feed extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -43,34 +41,19 @@ class App extends Component {
   }
   render() {
     return (
-      <InfiniteScroll
-        loadMore={this.getMore.bind(this)}
-        hasMore={true}
-      >
-        {this.state.posts.length > 0 ? this.state.posts.map(p => {
-          return <PostPreview vote={() => this.vote(p.author, p.permlink)} change={() => this.change(p.author, p.permlink)} post={p}/>
-        }): Loader}
-      </InfiniteScroll>
+      <div>
+        <Helmet>
+          <title>Feed | Memeit.LOL</title>
+        </Helmet>
+        <InfiniteScroll
+          loadMore={this.getMore.bind(this)}
+          hasMore={true}
+        >
+          {this.state.posts.length > 0 ? this.state.posts.map(p => {
+            return <PostPreview vote={() => this.vote(p.author, p.permlink)} change={() => this.change(p.author, p.permlink)} post={p}/>
+          }): Loader}
+        </InfiniteScroll>
+      </div>
     );
   }
 }
-App.propTypes = {
-  actions: PropTypes.shape({
-    login: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired
-  }),
-  app: PropTypes.shape({})
-};
-function mapStateToProps(state) {
-  const props = { app: state.app };
-  return props;
-}
-function mapDispatchToProps(dispatch) {
-  const actions = {
-    login,
-    logout
-  };
-  const actionMap = { actions: bindActionCreators(actions, dispatch) };
-  return actionMap;
-}
-export default withCookies(connect(mapStateToProps, mapDispatchToProps)(App));

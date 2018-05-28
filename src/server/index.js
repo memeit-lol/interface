@@ -21,7 +21,7 @@ app.get("*", (req, res) => {
   const promises = branch.map(({ route, match }) => {
     const fetchData = route.component.fetchData;
     if (fetchData instanceof Function) {
-      return fetchData({match});
+      return fetchData({store, match});
     }
     return Promise.resolve(null);
   });
@@ -55,6 +55,7 @@ app.get("*", (req, res) => {
         </head>
         <body ${helmet.bodyAttributes.toString()}>
           <div id="app">${markup}</div>
+          <script>window.__PRELOADED_STATE__ = ${JSON.stringify(store.getState()).replace(/</g, '\\u003c')}</script>
           <script src="/bundle.js"></script>
         </body>
       </html>

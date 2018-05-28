@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withCookies } from 'react-cookie';
 import axios from 'axios';
 import config from '../../config';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -12,8 +11,18 @@ import { vote } from '../../sc2';
 import { Avatar, Badge, Divider, message, Card, Icon, Modal } from 'antd';
 import marked from 'marked';
 import {Helmet} from "react-helmet";
+import {addpost} from "../../reducers/contentActions";
+import {
+  getPost
+} from "../../reducers";
 
-class App extends Component {
+@connect(
+  (state, ownProps) => ({
+    post: getPost(state, `/@${ownProps.match.params.author}/${ownProps.match.params.permlink}`)
+  }),
+  { addpost }
+)
+export default class Single extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -36,16 +45,21 @@ class App extends Component {
     }
   }
 
-  fetchData(da) {
-    axios.get(config.api + `info?type=post&author=${da.match.params.author}&permlink=${da.match.params.permlink}`).then(function(d) {
-      this.setState({post: d.data, loaded: true})
-    }.bind(this))
+  static fetchData({store, match}) {
+    return axios.get(config.api + `info?type=post&author=${match.params.author}&permlink=${match.params.permlink}`).then(d => {
+      store.dispatch(addpost({post: d.data}));
+    })
   }
 
   componentWillMount() {
-    axios.get(config.api + `info?type=post&author=${this.props.match.params.author}&permlink=${this.props.match.params.permlink}`).then(function(d) {
-      this.setState({post: d.data, loaded: true})
-    }.bind(this))
+    if (!this.props.post) {
+      axios.get(config.api + `info?type=post&author=${this.props.match.params.author}&permlink=${this.props.match.params.permlink}`).then(d => {
+        this.props.addpost({post: d.data});
+        this.setState({loaded: true});
+      })
+    } else {
+      this.setState({loaded:true});
+    }
     axios.get(config.api + `info?type=comments&author=${this.props.match.params.author}&permlink=${this.props.match.params.permlink}`).then(function(d) {
       this.setState({comments: d.data})
       d.data.forEach(comment => {
@@ -112,54 +126,53 @@ class App extends Component {
     let score = 0;
     let date;
     if(this.state.loaded) {
-      if(this.state.post.db) {
-        this.state.post.db.votes.forEach(function (vote) {
+      if(this.props.post.db) {
+        this.props.post.db.votes.forEach(function (vote) {
           percentage += vote.approved
         })
-        percentage /= this.state.post.db.votes.length;
+        percentage /= this.props.post.db.votes.length;
         percentage *= 100;
-        date = new Date(this.state.post.db.time);
-        score = this.state.post.db.score;
+        date = new Date(this.props.post.db.time);
+        score = this.props.post.db.score;
       } else {
-        date = new Date(this.state.post.created);
+        date = new Date(this.props.post.created);
       }
     }
     let src = '';
     let author = '';
-    if (this.state.post.json_metadata) {
+    if (this.props.post.json_metadata || this.props.post.info.json_metadata) {
       try {
-        src = JSON.parse(this.state.post.json_metadata).image[0]
+        src = JSON.parse(this.props.post.json_metadata).image[0];
+        author = JSON.parse(this.props.post.info.json_metadata).profile.profile_image;
       } catch (e) {}
     }
-    if (this.state.post.info.json_metadata) {
-      author = JSON.parse(this.state.post.info.json_metadata).profile.profile_image;
-    }
-    
+
     return (
       <div style={{maxWidth: '60vw', margin: '10px auto'}}>
         <Helmet>
+          <title>{`${this.props.post.title} by ${this.props.post.author}`} | Memeit.LOL</title>
           <meta property="og:image" content={src} />
-          <meta property="og:url" content={`https://test.memeit.lol/@${this.state.post.author}/${this.state.post.permlink}`} />
-          <meta property="og:title" content={`${this.state.post.title} by ${this.state.post.author}`} />
+          <meta property="og:url" content={`https://test.memeit.lol/@${this.props.post.author}/${this.props.post.permlink}`} />
+          <meta property="og:title" content={`${this.props.post.title} by ${this.props.post.author}`} />
           <meta property="og:type" content="website" />
           <meta property="twitter:image" content={src} />
           <meta property="twitter:card" content='summary_large_image' />
-          <meta property="twitter:title" content={`${this.state.post.title} by ${this.state.post.author}`} />
+          <meta property="twitter:title" content={`${this.props.post.title} by ${this.props.post.author}`} />
         </Helmet>
         <div>
-          <Badge count={this.state.post.info.rep}>
+          <Badge count={this.props.post.info.rep}>
             <Avatar src={author} size="large" />
           </Badge>
-          <span style={{fontSize: '25px', marginLeft: '20px'}}>@{this.state.post.author}</span>
+          <span style={{fontSize: '25px', marginLeft: '20px'}}>@{this.props.post.author}</span>
         </div>
-        <h2 style={{padding: '20px 0px'}}>{this.state.post.title}</h2>
+        <h2 style={{padding: '20px 0px'}}>{this.props.post.title}</h2>
         <div style={{width: '100%'}}>
           
-          <div className='Body' dangerouslySetInnerHTML={{__html: marked(this.state.post.body || '')}}></div>
+          <div className='Body' dangerouslySetInnerHTML={{__html: marked(this.props.post.body || '')}}></div>
 
           <div className='ant-card-actions' style={{maxWidth: '60vw', display: 'flex', background: 'none', border: '0'}}>
             <li style={{flex: '1'}}>
-              <span><Icon type="up-circle-o" onClick={() => {this.vote(this.state.post.author, this.state.post.permlink)}} /></span>
+              <span><Icon type="up-circle-o" onClick={() => {this.vote(this.props.post.author, this.props.post.permlink)}} /></span>
             </li>
             <li style={{flex: '1'}}>
               <span><Icon type="info" onClick={() => {this.setState({visible: true})}} /></span>
@@ -173,25 +186,17 @@ class App extends Component {
         {this.state.commentLoaded === true ? comments : Loader}
         <Modal
           visible={this.state.visible}
-          title={`${this.state.post.title} by @${this.state.post.author}`}
+          title={`${this.props.post.title} by @${this.props.post.author}`}
           onCancel={this.handleCancel.bind(this)}
           footer={null}
         >
           <p>ModScore: {score}</p>
           <p>ModPercentage: {percentage.toFixed()}%</p>
           <p>Date: {`${date.getHours() > 12 ? date.getHours() - 12 : date.getHours() }:${date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()}${date.getHours() > 12 ? 'PM' : 'AM' } ${date.toDateString()}`}</p>
-          <p>Comments: {this.state.post.children}</p>
-          <p>Payout: {this.state.post.total_payout_value}</p>
+          <p>Comments: {this.props.post.children}</p>
+          <p>Payout: {this.props.post.total_payout_value}</p>
         </Modal>
       </div>
     );
   }
 }
-App.propTypes = {
-  app: PropTypes.shape({})
-};
-function mapStateToProps(state) {
-  const props = { app: state.app };
-  return props;
-}
-export default withCookies(connect(mapStateToProps, null)(App));

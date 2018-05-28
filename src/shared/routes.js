@@ -3,9 +3,6 @@ import Feed from "./components/Feed";
 import Callback from "./components/Callback";
 import Single from "./components/Single";
 
-import axios from 'axios';
-import config from './config';
-
 const routes = [
   {
     component: Layout,
@@ -22,10 +19,7 @@ const routes = [
       },
       {
         path: "/@:author/:permlink",
-        component: Single,
-        loadData: async (match) => {
-          return await axios.get(config.api + `info?type=post&author=${match.params.author}&permlink=${match.params.permlink}`)
-        }
+        component: Single
       }
     ]
   }

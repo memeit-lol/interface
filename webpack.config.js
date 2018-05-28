@@ -47,7 +47,7 @@ const browserConfig = {
             "react",
             "stage-0"
           ],
-          plugins: [["import", { "libraryName": "antd", "style": true }]]
+          plugins: ["transform-decorators-legacy", ["import", { "libraryName": "antd", "style": true }]]
         }
       }
     ]
@@ -100,7 +100,8 @@ const serverConfig = {
           presets: [
             "react",
             "stage-0"
-          ]
+          ],
+          plugins: ["transform-decorators-legacy", ["import", { "libraryName": "antd", "style": true }]]
         }
       }
     ]
