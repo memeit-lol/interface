@@ -7,7 +7,10 @@ import { Form, Icon, Input, Button, Checkbox } from 'antd';
 const FormItem = Form.Item;
 import {Helmet} from "react-helmet";
 import LoginRequired from "../LoginRequired";
-import { fabric } from  "fabric";
+import axios from 'axios';
+import config from '../../config';
+
+import Fabric from "./fabric";
 
 @LoginRequired
 @Form.create()
@@ -15,20 +18,21 @@ import { fabric } from  "fabric";
   app: state.app
 }))
 export default class Editor extends Component {
+  constructor(props) {
+    super(props)
+  }
   static fetchData({store, match}) {
     return null;
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        console.log(window.export())
       }
     });
-  }
-  componentWillMount() {
-    this.canvas = new fabric.Canvas(this.refs.canvas);
-    console.log(this.canvas)
   }
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -37,7 +41,7 @@ export default class Editor extends Component {
         <Helmet>
           <title>Editor | Memeit.LOL</title>
         </Helmet>
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form onSubmit={this.handleSubmit} style={{maxWidth: 500, margin: '10px auto'}} className="login-form">
           <FormItem>
             {getFieldDecorator('title', {
               rules: [{ required: true, message: 'Please input a title!' }],
@@ -45,8 +49,8 @@ export default class Editor extends Component {
               <Input placeholder="Title" />
             )}
           </FormItem>
-          <canvas ref="canvas"></canvas>
-          <Button type="primary" htmlType="submit" className="login-form-button">
+          <Fabric />
+          <Button type="primary" style={{display: 'block', margin: '10px auto'}} htmlType="submit" className="login-form-button">
             Submit
           </Button>
         </Form>

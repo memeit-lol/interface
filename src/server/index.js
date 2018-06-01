@@ -53,6 +53,7 @@ app.get("*", (req, res) => {
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <link rel="stylesheet" href="/css/main.css" />
           <link rel="icon" type="image/png" href="/media/icon.png">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.5/fabric.js"></script>
         </head>
         <body ${helmet.bodyAttributes.toString()}>
           <div id="app">${markup}</div>
