@@ -14,7 +14,6 @@ export const getUsername = state => fromApp.getUsername(state.app);
 export const getIsMod = state => fromApp.getIsMod(state.app);
 export const getIsLogged = state => fromApp.getIsLogged(state.app);
 export const getUser = state => fromApp.getUser(state.app);
-export const getToken = state => fromApp.getToken(state.app);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPost = (state, postDec) => fromPosts.getPost(state.posts, postDec);

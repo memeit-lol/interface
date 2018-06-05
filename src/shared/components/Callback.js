@@ -6,12 +6,8 @@ import sc2, {
   accessToken
 } from '../sc2';
 import { withCookies } from 'react-cookie';
-import { token } from '../reducers/authActions';
 
 @withCookies
-@connect(state => ({}), {
-  token
-})
 export default class Callback extends Component {
   static fetchData({store, match}) {
     return null;
@@ -22,7 +18,6 @@ export default class Callback extends Component {
     accessToken(accesstoken);
     sc2.me(function (err, d) {
       this.props.cookies.set('token', accesstoken, { path: '/' });
-      this.props.token({ token: accesstoken });
       this.props.history.push('/');
     }.bind(this))
   }

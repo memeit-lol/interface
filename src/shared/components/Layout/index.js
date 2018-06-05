@@ -39,36 +39,20 @@ export default class App extends Component {
     this.props.logout();
     this.props.cookies.remove('token');
   }
-  componentWillUpdate() {
-    if (!this.props.app.isLogged) {
-      if (this.props.app.token) {
-        sc2.setAccessToken(this.props.app.token);
-        sc2.me(function (err, d) {
-          this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
-        }.bind(this))
-      } 
-      if(this.props.cookies.get('token')) {
-        sc2.setAccessToken(this.props.cookies.get('token'));
-        sc2.me(function (err, d) {
-          this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
-        }.bind(this))
-      }
+  componentWillMount() {
+    if(this.props.cookies.get('token')) {
+      sc2.setAccessToken(this.props.cookies.get('token'));
+      sc2.me(function (err, d) {
+        this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
+      }.bind(this))
     }
   }
-  componentWillMount() {
-    if (!this.props.app.isLogged) {
-      if (this.props.app.token) {
-        sc2.setAccessToken(this.props.app.token);
-        sc2.me(function (err, d) {
-          this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
-        }.bind(this))
-      } 
-      if(this.props.cookies.get('token')) {
-        sc2.setAccessToken(this.props.cookies.get('token'));
-        sc2.me(function (err, d) {
-          this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
-        }.bind(this))
-      }
+  componentWillUpdate() {
+    if(this.props.cookies.get('token')) {
+      sc2.setAccessToken(this.props.cookies.get('token'));
+      sc2.me(function (err, d) {
+        this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
+      }.bind(this))
     }
   }
   render() {
