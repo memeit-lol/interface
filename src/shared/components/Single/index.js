@@ -182,7 +182,7 @@ export default class Single extends Component {
             </li>
           </div>
         </div>
-        <Divider>Comments</Divider>
+        <Divider>{this.state.commentLoaded === true && this.state.comments.length > 0 ? 'Comments' : 'No Comments'}</Divider>
         {this.state.commentLoaded === true ? comments : Loader}
         <Modal
           visible={this.state.visible}

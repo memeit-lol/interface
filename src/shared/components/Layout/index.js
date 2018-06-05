@@ -48,7 +48,7 @@ export default class App extends Component {
     }
   }
   componentWillUpdate() {
-    if(this.props.cookies.get('token')) {
+    if(this.props.cookies.get('token') && !this.props.app.isLogged) {
       sc2.setAccessToken(this.props.cookies.get('token'));
       sc2.me(function (err, d) {
         this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
