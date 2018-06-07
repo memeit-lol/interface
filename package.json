@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "standard": "standard --parser babel-eslint",
+    "standard-fix": "standard --parser babel-eslint --fix",
     "webpack": "webpack -w",
     "build": "webpack",
     "server": "nodemon server.js",
