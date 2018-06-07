@@ -20,25 +20,44 @@ import { renderRoutes } from 'react-router-config';
 import routes from "../../routes";
 import icon from "./icon.png";
 
-@withCookies
+@withCookies    // Adds this.props.cookies object.
 @connect(
   state => ({
-    app: state.app
+    app: state.app    // Hold app variables such as the user object, if the user is logged in, and username.
   }), {
-    login, logout
+    login, logout   // Redux actions that are added to this.props
   }
 )
 export default class App extends Component {
+  /**
+   * This is for SSR preloading.
+   * @param {Object} store - The initial store from the server side rendering.
+   * @param {Object} match - Tells where the location is.
+   * @returns {null} - We don't need this for the editor.
+   */
   static fetchData({store, match}) {
     return null;
   }
+
+  /**
+   * Redirects the window to the SteemConnect login portal.
+   */
   login() {
     window.location = sc2.getLoginURL();
   }
+
+  /**
+   * Logs out user and removes token cookie.
+   */
   logout() {
     this.props.logout();
     this.props.cookies.remove('token');
   }
+
+  /**
+   * This is ran after the React component was mounted.
+   * If there is a cookie, login.
+   */
   componentWillMount() {
     if(this.props.cookies.get('token')) {
       sc2.setAccessToken(this.props.cookies.get('token'));
@@ -47,6 +66,11 @@ export default class App extends Component {
       }.bind(this))
     }
   }
+  
+  /**
+   * This is ran before the React component will mount.
+   * If there is a cookie, login.
+   */
   componentWillUpdate() {
     if(this.props.cookies.get('token') && !this.props.app.isLogged) {
       sc2.setAccessToken(this.props.cookies.get('token'));
@@ -55,6 +79,10 @@ export default class App extends Component {
       }.bind(this))
     }
   }
+
+  /**
+   * This renders the component onto the DOM.
+   */
   render() {
     let avatar = '';
     try {

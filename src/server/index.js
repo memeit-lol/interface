@@ -17,6 +17,7 @@ app.use(cookiesMiddleware());
 
 app.get("*", (req, res) => {
 
+  // SSR Things
   const branch = matchRoutes(routes, req.url);
   const promises = branch.map(({ route, match }) => {
     const fetchData = route.component.fetchData;
@@ -25,6 +26,7 @@ app.get("*", (req, res) => {
     }
     return Promise.resolve(null);
   });
+  // /SSR Things
 
   Promise.all(promises).then(() => {
     const context = {};

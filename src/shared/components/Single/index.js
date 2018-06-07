@@ -18,39 +18,50 @@ import {
 
 @connect(
   (state, ownProps) => ({
-    post: getPost(state, `/@${ownProps.match.params.author}/${ownProps.match.params.permlink}`)
+    post: getPost(state, `/@${ownProps.match.params.author}/${ownProps.match.params.permlink}`)   // Gets post data from redux store
   }),
-  { addpost }
+  { addpost }   // Adds a post to redux store, used during SSR.
 )
 export default class Single extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      post: {
-        replies: [],
-        info: {
-          json_metadata: ''
-        }
-      },
-      loaded: false,
-      commentLoaded: false,
-      visible: false,
-      comments: {
-        replies: [],
-        info: {
-          json_metadata: ''
-        }
-      },
-      comment: []
-    }
-  }
-
+  /**
+   * This is for SSR preloading.
+   * @param {Object} store - The initial store from the server side rendering.
+   * @param {Object} match - Tells where the location is.
+   * @returns {Promise} - This adds the single post to the store during rendering for metadata.
+   */
   static fetchData({store, match}) {
     return axios.get(config.api + `info?type=post&author=${match.params.author}&permlink=${match.params.permlink}`).then(d => {
       store.dispatch(addpost({post: d.data}));
     })
   }
 
+  /**
+   * For the state we need the post data, comments, is loaded, is comments loaded, and is modal visible. 
+   * @returns {Object} - This returns the initial state for react.
+   */
+  state = {
+    post: {
+      replies: [],
+      info: {
+        json_metadata: ''
+      }
+    },
+    loaded: false,
+    commentLoaded: false,
+    visible: false,
+    comments: {
+      replies: [],
+      info: {
+        json_metadata: ''
+      }
+    },
+    comment: []
+  }
+
+  /**
+   * This function is fired when the React component is about to load.
+   * This is where we get the post and comments.
+   */
   componentWillMount() {
     if (!this.props.post) {
       axios.get(config.api + `info?type=post&author=${this.props.match.params.author}&permlink=${this.props.match.params.permlink}`).then(d => {
@@ -69,10 +80,18 @@ export default class Single extends Component {
     }.bind(this))
   }
 
+  /**
+   * Closes info modal.
+   */
   handleCancel() {
     this.setState({ visible: false });
   }
 
+  /**
+   * This votes the post and shows a message saying 'Voted!'
+   * @param {String} author - The author's username
+   * @param {String} permlink - The post's permlink
+   */
   vote(author, permlink) {
     message.loading()
     vote(this.props.app.username, author, permlink).then((m) => {
@@ -82,6 +101,10 @@ export default class Single extends Component {
     })
   }
 
+  /**
+   * This is a recursive loop creating the comment elements.
+   * @param {Array} r - Array of replies to a post/comment. 
+   */
   comments(r) {
     let author = '';
     if (r.info.json_metadata) {
@@ -117,6 +140,9 @@ export default class Single extends Component {
     }
   }
   
+  /**
+   * This renders the component onto the DOM.
+   */
   render() {
     if (!this.state.loaded) return Loader;
     let comments = this.state.comment.map(c => {

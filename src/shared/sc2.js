@@ -8,10 +8,20 @@ const api = sc2.Initialize({
 
 export default api;
 
+/**
+ * Stores the access token into the sc2 api.
+ * @param {String} token - An access token from SteemConnect
+ */
 export const accessToken = function (token) {
   api.setAccessToken(token);
 }
 
+/**
+ * Upvotes a post with 100% voting power.
+ * @param {String} voter - Username of the voter
+ * @param {String} author - Username of the author
+ * @param {String} permlink - The post's permlink
+ */
 export const vote = function (voter, author, permlink) {
   return new Promise((resolve, reject) => {
     api.vote(voter, author, permlink, 10000, function(err, result) {

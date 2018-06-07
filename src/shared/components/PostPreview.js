@@ -6,22 +6,35 @@ import { Modal, Card, Icon } from 'antd';
 const { Meta } = Card;
 
 class PostPreview extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-      voted: false
-    }
+  /**
+   * For the state we need an to know if the modal is open, and if the post has already been voted.
+   * @returns {Object} - This returns the initial state for react.
+   */
+  state = {
+    visible: false,
+    voted: false
   }
+
+  /**
+   * Closes info modal.
+   */
   handleCancel() {
     this.setState({ visible: false });
   }
+
+  /**
+   * Votes the post if not already voted.
+   */
   vote() {
     if (!this.state.voted) {
       this.props.vote()
       this.setState({voted: true})
     }
   }
+
+  /**
+   * This renders the component onto the DOM.
+   */
   render() {
     let percentage = 0;
     this.props.post.votes.forEach(function (vote) {

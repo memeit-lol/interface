@@ -23,6 +23,10 @@ const routes = [
         component: Single
       },
       {
+        path: "/:category/@:author/:permlink",
+        component: Single
+      },
+      {
         path: "/write",
         exact: true,
         component: Editor

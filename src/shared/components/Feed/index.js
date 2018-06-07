@@ -13,27 +13,51 @@ import { message } from 'antd';
 import {Helmet} from "react-helmet";
 
 @connect(state => ({
-  app: state.app
+  app: state.app    // Hold app variables such as the user object, if the user is logged in, and username.
 }))
 export default class Feed extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      posts: [],
-      num: 0
-    }
+  /**
+   * For the state we need the array of posts, and the pagination number.
+   * @returns {Object} - This returns the initial state for react.
+   */
+  state = {
+    posts: [],
+    num: 0
   }
+
+  /**
+   * This is for SSR preloading.
+   * @param {Object} store - The initial store from the server side rendering.
+   * @param {Object} match - Tells where the location is.
+   * @returns {null} - We don't need this for the editor.
+   */
   static fetchData({store, match}) {
     return null;
   }
+
+  /**
+   * Gets more posts and adds them to the React Infinate Scroller.
+   */
   getMore() {
     axios.get(config.api + 'post?$sort[time]=-1&score[$gt]=0&$skip=' + (this.state.num * 10)).then(d => {
       this.setState({ num: this.state.num + 1, posts: [...this.state.posts, ...d.data.data]})
     })
   }
+
+  /**
+   * This redirects to the single posts page
+   * @param {String} author - The author's username
+   * @param {String} permlink - The post's permlink
+   */
   change(author, permlink) {
     this.props.history.push(`/@${author}/${permlink}`)
   }
+
+  /**
+   * This votes a post and shows a message saying 'Voted!'
+   * @param {String} author - The author's username
+   * @param {String} permlink - The post's permlink
+   */
   vote(author, permlink) {
     message.loading()
     vote(this.props.app.username, author, permlink).then((m) => {
@@ -42,6 +66,10 @@ export default class Feed extends Component {
       message.error('Please try again later!')
     })
   }
+
+  /**
+   * This renders the component onto the DOM.
+   */
   render() {
     return (
       <div>
