@@ -1,31 +1,30 @@
 import React, {
   Component
-} from 'react';
-import { connect } from 'react-redux';
+} from 'react'
+import { connect } from 'react-redux'
 import {
   login,
   logout
-} from '../../reducers/authActions';
+} from '../../reducers/authActions'
 import {
   Layout,
   Menu,
   Dropdown,
   Avatar
-} from 'antd';
-const {Header, Footer, Sider, Content} = Layout;
-import sc2 from '../../sc2';
-import { withCookies } from 'react-cookie';
-import '../../styles/base.less';
-import { renderRoutes } from 'react-router-config';
-import routes from "../../routes";
-import icon from "./icon.png";
+} from 'antd'
+import sc2 from '../../sc2'
+import { withCookies } from 'react-cookie'
+import '../../styles/base.less'
+import { renderRoutes } from 'react-router-config'
+import icon from './icon.png'
+const {Header, Content} = Layout
 
-@withCookies    // Adds this.props.cookies object.
-@connect(
+@withCookies // eslint-disable-line
+@connect( // eslint-disable-line
   state => ({
-    app: state.app    // Hold app variables such as the user object, if the user is logged in, and username.
+    app: state.app // Hold app variables such as the user object, if the user is logged in, and username.
   }), {
-    login, logout   // Redux actions that are added to this.props
+    login, logout // Redux actions that are added to this.props
   }
 )
 export default class App extends Component {
@@ -35,46 +34,48 @@ export default class App extends Component {
    * @param {Object} match - Tells where the location is.
    * @returns {null} - We don't need this for the editor.
    */
-  static fetchData({store, match}) {
-    return null;
+  static fetchData ({store, match}) {
+    return null
   }
 
   /**
    * Redirects the window to the SteemConnect login portal.
    */
-  login() {
-    window.location = sc2.getLoginURL();
+  login () {
+    window.location = sc2.getLoginURL()
   }
 
   /**
    * Logs out user and removes token cookie.
    */
-  logout() {
-    this.props.logout();
-    this.props.cookies.remove('token');
+  logout () {
+    this.props.logout()
+    this.props.cookies.remove('token')
   }
 
   /**
    * This is ran after the React component was mounted.
    * If there is a cookie, login.
    */
-  componentWillMount() {
-    if(this.props.cookies.get('token')) {
-      sc2.setAccessToken(this.props.cookies.get('token'));
+  componentWillMount () {
+    if (this.props.cookies.get('token')) {
+      sc2.setAccessToken(this.props.cookies.get('token'))
       sc2.me(function (err, d) {
+        if (err) console.log(err)
         this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
       }.bind(this))
     }
   }
-  
+
   /**
    * This is ran before the React component will mount.
    * If there is a cookie, login.
    */
-  componentWillUpdate() {
-    if(this.props.cookies.get('token') && !this.props.app.isLogged) {
-      sc2.setAccessToken(this.props.cookies.get('token'));
+  componentWillUpdate () {
+    if (this.props.cookies.get('token') && !this.props.app.isLogged) {
+      sc2.setAccessToken(this.props.cookies.get('token'))
       sc2.me(function (err, d) {
+        if (err) console.log(err)
         this.props.login({username: d.user, isLogged: true, isMod: false, user: d.account})
       }.bind(this))
     }
@@ -83,8 +84,8 @@ export default class App extends Component {
   /**
    * This renders the component onto the DOM.
    */
-  render() {
-    let avatar = '';
+  render () {
+    let avatar = ''
     try {
       avatar = JSON.parse(this.props.app.user.json_metadata).profile.profile_image
     } catch (e) {}
@@ -97,11 +98,11 @@ export default class App extends Component {
       <Menu theme='dark' defaultSelectedKeys={[]} style={{ lineHeight: '64px' }}>
         <Menu.Item key='1' onClick={this.login.bind(this)}>Login</Menu.Item>
       </Menu>
-    );
+    )
     return (
       <Layout>
         <Header>
-          <Avatar src={icon} onClick={() => {this.props.history.push('/')}} />
+          <Avatar src={icon} onClick={() => { this.props.history.push('/') }} />
           <Dropdown overlay={menu} trigger={['click']} placement='bottomRight'>
             <a
               style={{
@@ -118,6 +119,6 @@ export default class App extends Component {
           {renderRoutes(this.props.route.routes)}
         </Content>
       </Layout>
-    );
+    )
   }
 }

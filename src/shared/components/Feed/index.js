@@ -1,19 +1,19 @@
 import React, {
   Component
-} from 'react';
-import { connect } from 'react-redux';
-import sc2, { vote } from '../../sc2';
-import { withCookies } from 'react-cookie';
-import axios from 'axios';
-import config from '../../config';
-import InfiniteScroll from 'react-infinite-scroller';
-import PostPreview from '../PostPreview';
-import Loader from '../Loader';
-import { message } from 'antd';
-import {Helmet} from "react-helmet";
+} from 'react'
+import { connect } from 'react-redux'
+import { vote } from '../../sc2'
+import { withCookies } from 'react-cookie' // eslint-disable-line
+import axios from 'axios'
+import config from '../../config'
+import InfiniteScroll from 'react-infinite-scroller'
+import PostPreview from '../PostPreview'
+import Loader from '../Loader'
+import { message } from 'antd'
+import {Helmet} from 'react-helmet'
 
-@connect(state => ({
-  app: state.app    // Hold app variables such as the user object, if the user is logged in, and username.
+@connect(state => ({ // eslint-disable-line
+  app: state.app // Hold app variables such as the user object, if the user is logged in, and username.
 }))
 export default class Feed extends Component {
   /**
@@ -31,16 +31,16 @@ export default class Feed extends Component {
    * @param {Object} match - Tells where the location is.
    * @returns {null} - We don't need this for the editor.
    */
-  static fetchData({store, match}) {
-    return null;
+  static fetchData ({store, match}) {
+    return null
   }
 
   /**
    * Gets more posts and adds them to the React Infinate Scroller.
    */
-  getMore() {
+  getMore () {
     axios.get(config.api + 'post?$sort[time]=-1&score[$gt]=0&$skip=' + (this.state.num * 10)).then(d => {
-      this.setState({ num: this.state.num + 1, posts: [...this.state.posts, ...d.data.data]})
+      this.setState({ num: this.state.num + 1, posts: [...this.state.posts, ...d.data.data] })
     })
   }
 
@@ -49,7 +49,7 @@ export default class Feed extends Component {
    * @param {String} author - The author's username
    * @param {String} permlink - The post's permlink
    */
-  change(author, permlink) {
+  change (author, permlink) {
     this.props.history.push(`/@${author}/${permlink}`)
   }
 
@@ -58,7 +58,7 @@ export default class Feed extends Component {
    * @param {String} author - The author's username
    * @param {String} permlink - The post's permlink
    */
-  vote(author, permlink) {
+  vote (author, permlink) {
     message.loading()
     vote(this.props.app.username, author, permlink).then((m) => {
       message.success('Voted!')
@@ -70,7 +70,7 @@ export default class Feed extends Component {
   /**
    * This renders the component onto the DOM.
    */
-  render() {
+  render () {
     return (
       <div>
         <Helmet>
@@ -78,13 +78,13 @@ export default class Feed extends Component {
         </Helmet>
         <InfiniteScroll
           loadMore={this.getMore.bind(this)}
-          hasMore={true}
+          hasMore
         >
           {this.state.posts.length > 0 ? this.state.posts.map(p => {
-            return <PostPreview vote={() => this.vote(p.author, p.permlink)} change={() => this.change(p.author, p.permlink)} post={p}/>
-          }): Loader}
+            return <PostPreview vote={() => this.vote(p.author, p.permlink)} change={() => this.change(p.author, p.permlink)} post={p} />
+          }) : Loader}
         </InfiniteScroll>
       </div>
-    );
+    )
   }
 }

@@ -1,4 +1,4 @@
-export const ADDPOST = 'ADDPOST';
+export const ADDPOST = 'ADDPOST'
 
 /**
  * Adds the post into the redux store.
@@ -6,5 +6,5 @@ export const ADDPOST = 'ADDPOST';
  * @returns {Object} - Returns a redux action.
  */
 export const addpost = (payload) => {
-  return { type: ADDPOST, payload };
+  return { type: ADDPOST, payload }
 }

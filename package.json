@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
     "babel-plugin-import": "^1.7.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
@@ -58,8 +59,12 @@
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "nodemon": "^1.17.5",
+    "standard": "^11.0.1",
     "style-loader": "^0.21.0",
     "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }

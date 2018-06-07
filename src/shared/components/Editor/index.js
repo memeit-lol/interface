@@ -1,18 +1,17 @@
 import React, {
   Component
-} from 'react';
-import { connect } from 'react-redux';
-import sc2 from '../../sc2';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
-const FormItem = Form.Item;
-import {Helmet} from "react-helmet";
-import LoginRequired from "../LoginRequired";
-import { images as imagesAPI, stickers as stickersAPI } from '../../api';
+} from 'react'
+import { connect } from 'react-redux'
+import { Form, Input, Button } from 'antd'
+import {Helmet} from 'react-helmet'
+import LoginRequired from '../LoginRequired'
+import { images as imagesAPI, stickers as stickersAPI } from '../../api'
+const FormItem = Form.Item
 
-@LoginRequired    // If logged in continue, else go to '/'.
-@Form.create()    // Part of antd, helps create a form with advanced features.
-@connect(state => ({
-  app: state.app    // Hold app variables such as the user object, if the user is logged in, and username.
+@LoginRequired // eslint-disable-line
+@Form.create() // eslint-disable-line
+@connect(state => ({ // eslint-disable-line
+  app: state.app // Hold app variables such as the user object, if the user is logged in, and username.
 }))
 export default class Editor extends Component {
   /**
@@ -21,8 +20,8 @@ export default class Editor extends Component {
    * @param {Object} match - Tells where the location is.
    * @returns {null} - We don't need this for the editor.
    */
-  static fetchData({store, match}) {
-    return null;
+  static fetchData ({store, match}) {
+    return null
   }
 
   /**
@@ -39,20 +38,20 @@ export default class Editor extends Component {
    * @param {Object} e - An event object from the form submission.
    */
   handleSubmit = (e) => {
-    e.preventDefault();   // Stops from reloading. We don't need to with this app.
+    e.preventDefault() // Stops from reloading. We don't need to with this app.
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        console.log('Received values of form: ', values)
         console.log(this.exported())
       }
-    });
+    })
   }
 
   /**
    * This function is fired when the React component is about to load.
    * This is where we get the image and stickers array for the React state.
    */
-  componentWillMount() {
+  componentWillMount () {
     imagesAPI().then(d => {
       this.setState({
         images: d
@@ -71,11 +70,11 @@ export default class Editor extends Component {
    * This logic must be after the dom has loaded so we have access to the dom window.
    * This creates a new fabric canvas, initiates the del key, and adds a default background image.
    */
-  componentDidMount() {
-    if(typeof window.fabricCanvas === 'undefined') {
+  componentDidMount () {
+    if (typeof window.fabricCanvas === 'undefined') {
       window.fabricCanvas = new window.fabric.Canvas('canvas', {
         width: this.refs.canvas.parentElement.clientWidth
-      });
+      })
       window.onkeyup = function (ev) {
         switch (ev.keyCode) {
           case 46:
@@ -83,7 +82,7 @@ export default class Editor extends Component {
             break
         }
       }.bind(this)
-      this.addBackgroundImage('https://api.memeit.lol/v1/meme/1_Advice_Yoda_Gives.jpg');
+      this.addBackgroundImage('https://api.memeit.lol/v1/meme/1_Advice_Yoda_Gives.jpg')
     }
   }
 
@@ -91,7 +90,7 @@ export default class Editor extends Component {
    * This exports the canvas into an image.
    * @returns {String} - base64 png string of the canvas.
    */
-  exported() {
+  exported () {
     return window.fabricCanvas.toDataURL()
   }
 
@@ -99,15 +98,15 @@ export default class Editor extends Component {
    * This exports the canvas into a json object for drafting.
    * @returns {Object} - A Fabric instance to save for drafts.
    */
-  draft() {
+  draft () {
     return JSON.stringify(window.fabricCanvas.toJSON())
   }
 
   /**
    * This adds a sticker to the canvas editor.
-   * @param {String} url - The link to an image with access control '*'. 
+   * @param {String} url - The link to an image with access control '*'.
    */
-  addSticker(url) {
+  addSticker (url) {
     window.fabric.Image.fromURL(url, function (img) {
       var scale = 50 / img.height
       img.scale(scale)
@@ -120,7 +119,7 @@ export default class Editor extends Component {
    * This function deletes an active object on the canvas, or a custom object.
    * @param {Object} element - An Fabric object to delete.
    */
-  removeElement(element = window.fabricCanvas.getActiveObject()) {
+  removeElement (element = window.fabricCanvas.getActiveObject()) {
     window.fabricCanvas.remove(element)
   }
 
@@ -128,7 +127,7 @@ export default class Editor extends Component {
    * This function creates default textboxes on the editor.
    * One at the top and one on the bottom.
    */
-  defaultTextAreas() {
+  defaultTextAreas () {
     this.addText('DOUBLE CLICK ON ME', 0, 25)
     this.addText('DOUBLE CLICK ON ME', 0, window.fabricCanvas.height - 75)
   }
@@ -139,8 +138,8 @@ export default class Editor extends Component {
    * @param {Integer} x - The initial x position
    * @param {Integer} y - The initial y position
    */
-  addText(text = "DOUBLE CLICK ON ME", x = 0, y = 0) {
-    var element = new window.fabric.Textbox(text, { width: this.refs.canvas.parentElement.clientWidth, height: 50, breakWords: true, textAlign:'center',left: x, top: y, fontFamily: 'Impact', fontSize: 40, stroke: '#000000', strokeWidth: 3, fill: "#ffffff", strokeMiterLimit: 2, strokeLineCap: "round" })
+  addText (text = 'DOUBLE CLICK ON ME', x = 0, y = 0) {
+    var element = new window.fabric.Textbox(text, { width: this.refs.canvas.parentElement.clientWidth, height: 50, breakWords: true, textAlign: 'center', left: x, top: y, fontFamily: 'Impact', fontSize: 40, stroke: '#000000', strokeWidth: 3, fill: '#ffffff', strokeMiterLimit: 2, strokeLineCap: 'round' })
     window.fabricCanvas.add(element)
     window.fabricCanvas.setActiveObject(element)
   }
@@ -149,9 +148,9 @@ export default class Editor extends Component {
    * This adds a background image to the canvas and runs the defaultTextAreas function.
    * @param {String} url - This is the image url for the background image
    */
-  addBackgroundImage(url) {
-    if(window !== null) {
-      var i = new Image()
+  addBackgroundImage (url) {
+    if (window !== null) {
+      var i = new Image() // eslint-disable-line
       i.onload = function () {
         window.fabricCanvas.clear()
         window.fabricCanvas.setHeight(i.height)
@@ -159,13 +158,13 @@ export default class Editor extends Component {
         window.fabricCanvas.setBackgroundImage(url, function () {
           var scale = i.height / i.width
           window.fabricCanvas.backgroundImage.scaleToWidth(this.refs.canvas.parentElement.clientWidth)
-          window.fabricCanvas.setDimensions({width: this.refs.canvas.parentElement.clientWidth, height: this.refs.canvas.parentElement.clientWidth  * scale})
-          var text = new window.fabric.Text('memeit.lol', { left: 7, top: this.refs.canvas.parentElement.clientWidth * scale - 25, fontFamily: 'Impact', fontSize: 20, stroke: '#000000', strokeWidth: .75, fill: "#ffffff", strokeMiterLimit: 2, strokeLineCap: "round" });
+          window.fabricCanvas.setDimensions({width: this.refs.canvas.parentElement.clientWidth, height: this.refs.canvas.parentElement.clientWidth * scale})
+          var text = new window.fabric.Text('memeit.lol', { left: 7, top: this.refs.canvas.parentElement.clientWidth * scale - 25, fontFamily: 'Impact', fontSize: 20, stroke: '#000000', strokeWidth: 0.75, fill: '#ffffff', strokeMiterLimit: 2, strokeLineCap: 'round' })
           text.selectable = false
           window.fabricCanvas.add(text)
           this.defaultTextAreas()
         }.bind(this), {crossOrigin: 'anonymous'})
-      }.bind(this);
+      }.bind(this)
       i.src = url
     }
   }
@@ -173,32 +172,28 @@ export default class Editor extends Component {
   /**
    * This renders the component onto the DOM.
    */
-  render() {
-    const { getFieldDecorator } = this.props.form;    // From antd, helps get form values.
-    const { loaded, images, stickers } = this.state;    // loaded is changed after the array is loaded, images is an array of all images from the api, stickers is an array of all the stickers from the api.
-    let imagesDOM, stickersDOM;   // These variable are for the sliders above and below the editor for picking stickers and background images.
-    if(loaded) {    // Runs if both stickers and images arrays are loaded into React state.
-      
-    }
+  render () {
+    const { getFieldDecorator } = this.props.form // From antd, helps get form values.
+
     return (
       <div>
         <Helmet>
           <title>Editor | Memeit.LOL</title>
         </Helmet>
-        <Form onSubmit={this.handleSubmit} style={{maxWidth: 500, margin: '10px auto'}} className="login-form">
+        <Form onSubmit={this.handleSubmit} style={{maxWidth: 500, margin: '10px auto'}} className='login-form'>
           <FormItem>
             {getFieldDecorator('title', {
-              rules: [{ required: true, message: 'Please input a title!' }],
+              rules: [{ required: true, message: 'Please input a title!' }]
             })(
-              <Input placeholder="Title" />
+              <Input placeholder='Title' />
             )}
           </FormItem>
-          <div><div><canvas ref="canvas" id="canvas"></canvas></div></div>
-          <Button type="primary" style={{display: 'block', margin: '10px auto'}} htmlType="submit" className="login-form-button">
+          <div><div><canvas ref='canvas' id='canvas' /></div></div>
+          <Button type='primary' style={{display: 'block', margin: '10px auto'}} htmlType='submit' className='login-form-button'>
             Submit
           </Button>
         </Form>
       </div>
-    );
+    )
   }
 }
