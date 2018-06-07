@@ -1,34 +1,38 @@
-import Layout from "./components/Layout";
-import Feed from "./components/Feed";
-import Callback from "./components/Callback";
-import Single from "./components/Single";
-import Editor from "./components/Editor";
+import Layout from './components/Layout'
+import Feed from './components/Feed'
+import Callback from './components/Callback'
+import Single from './components/Single'
+import Editor from './components/Editor'
 
 const routes = [
   {
     component: Layout,
     routes: [
       {
-        path: "/",
+        path: '/',
         exact: true,
         component: Feed
       },
       {
-        path: "/callback",
+        path: '/callback',
         exact: true,
         component: Callback
       },
       {
-        path: "/@:author/:permlink",
+        path: '/@:author/:permlink',
         component: Single
       },
       {
-        path: "/write",
+        path: '/:category/@:author/:permlink',
+        component: Single
+      },
+      {
+        path: '/write',
         exact: true,
         component: Editor
       }
     ]
   }
-];
+]
 
-export default routes;
+export default routes

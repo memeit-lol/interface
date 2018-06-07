@@ -1,33 +1,34 @@
-import express from "express";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import { renderRoutes, matchRoutes } from 'react-router-config';
-import { StaticRouter } from "react-router-dom";
-import { Provider } from 'react-redux';
-import routes from "../shared/routes";
-import store from "../shared/store";
-import { CookiesProvider } from 'react-cookie';
-const cookiesMiddleware = require('universal-cookie-express');
-import { Helmet } from "react-helmet";
+import express from 'express'
+import React from 'react'
+import { renderToString } from 'react-dom/server'
+import { renderRoutes, matchRoutes } from 'react-router-config'
+import { StaticRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import routes from '../shared/routes'
+import store from '../shared/store'
+import { CookiesProvider } from 'react-cookie'
+import { Helmet } from 'react-helmet'
+const cookiesMiddleware = require('universal-cookie-express')
 
-const app = express();
+const app = express()
 
-app.use(express.static("public"));
-app.use(cookiesMiddleware());
+app.use(express.static('public'))
+app.use(cookiesMiddleware())
 
-app.get("*", (req, res) => {
-
-  const branch = matchRoutes(routes, req.url);
+app.get('*', (req, res) => {
+  // SSR Things
+  const branch = matchRoutes(routes, req.url)
   const promises = branch.map(({ route, match }) => {
-    const fetchData = route.component.fetchData;
+    const fetchData = route.component.fetchData
     if (fetchData instanceof Function) {
-      return fetchData({store, match});
+      return fetchData({store, match})
     }
-    return Promise.resolve(null);
-  });
+    return Promise.resolve(null)
+  })
+  // /SSR Things
 
   Promise.all(promises).then(() => {
-    const context = {};
+    const context = {}
     const markup = renderToString(
       <Provider store={store}>
         <CookiesProvider cookies={req.universalCookies}>
@@ -36,8 +37,8 @@ app.get("*", (req, res) => {
           </StaticRouter>
         </CookiesProvider>
       </Provider>
-    );
-    const helmet = Helmet.renderStatic();
+    )
+    const helmet = Helmet.renderStatic()
     res.send(`
       <!DOCTYPE html>
       <html ${helmet.htmlAttributes.toString()}>
@@ -60,10 +61,10 @@ app.get("*", (req, res) => {
           <script src="/bundle.js"></script>
         </body>
       </html>
-    `);
+    `)
   })
-});
+})
 
-app.listen(8000, function() {
-  console.log("Listening on port 8000.");
-});
+app.listen(8000, function () {
+  console.log('Listening on port 8000.')
+})
