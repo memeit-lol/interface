@@ -3,6 +3,7 @@ import Feed from './components/Feed'
 import Callback from './components/Callback'
 import Single from './components/Single'
 import Editor from './components/Editor'
+import Profile from './components/Profile'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
         path: '/write',
         exact: true,
         component: Editor
+      },
+      {
+        path: '/profile',
+        exact: true,
+        component: Profile
       }
     ]
   }

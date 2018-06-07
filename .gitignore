@@ -2,3 +2,4 @@
 server.js
 /public
 .env
+.vscode
