@@ -41,7 +41,7 @@ import React, {
      * author=gktown&skip=0 
      */
     getMore () {
-      axios.get(config.api + 'me?author='+this.props.app.username+'&skip=' + (this.state.num)).then(d => {
+      axios.get(config.api + 'me?author='+ this.props.match.params.username+'&skip=' + (this.state.num)).then(d => {
         this.setState({ num: this.state.num , posts: [...this.state.posts, ...d.data.data] })
       })
     }

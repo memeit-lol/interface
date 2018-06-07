@@ -33,7 +33,7 @@ const routes = [
         component: Editor
       },
       {
-        path: '/profile',
+        path: '/@:username',
         exact: true,
         component: Profile
       }
