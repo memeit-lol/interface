@@ -31,3 +31,5 @@ export const vote = function (voter, author, permlink) {
   })
 }
 
+
+
