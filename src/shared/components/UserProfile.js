@@ -31,13 +31,13 @@ import React, {
         <div key={`/@${this.props.user.name}`}>
           <Card
             hoverable
-            style={{ width: 300, margin: '20px auto' }}
-            cover={<img src={JSON.parse(this.props.user.json_metadata).profile.cover_image} />}
+            style={{ margin: '20px' }}
+            cover={<img style={{ height: '200px' }} src={JSON.parse(this.props.user.json_metadata).profile.cover_image} />}
             >
             <Meta
               title={this.props.user.name}
               description={desc}
-              avatar={<Avatar src={JSON.parse(this.props.user.json_metadata).profile.profile_image}/>}
+              avatar={<Avatar  src={JSON.parse(this.props.user.json_metadata).profile.profile_image}/>}
             />
           </Card>
         </div>

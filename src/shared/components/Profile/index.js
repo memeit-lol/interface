@@ -93,7 +93,6 @@ export default class Profile extends Component {
         <Helmet>
           <title>Profile | Memeit.LOL</title>
         </Helmet>
-        <h1 align="center">Profile</h1>
         {this.state.user.length > 0 ? this.state.user.map(u => {
             return <UserProfile user={u}></UserProfile>
           }) : Loader}
@@ -106,7 +105,7 @@ export default class Profile extends Component {
         >
           {this.state.posts.length > 0 ? this.state.posts.map(p => {
             return <PostPreview vote={() => this.vote(p.author, p.permlink)} change={() => this.change(p.author, p.permlink)} post={p} />
-          }) : Loader}
+          }) : <h1 align="center">This user has No Memes to Show here yet! </h1>}
         </InfiniteScroll>
         
       </div>
