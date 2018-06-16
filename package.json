@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "standard": "standard --parser babel-eslint",
+    "standard-fix": "standard --parser babel-eslint --fix",
     "webpack": "webpack -w",
     "build": "webpack",
     "server": "nodemon server.js",
-    "start": "concurrently --kill-others \"npm run webpack\" \"npm run server\""
+    "start": "concurrently --kill-others \"npm run webpack\" \"npm run server\"",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
