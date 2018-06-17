@@ -41,6 +41,7 @@ export default class Feed extends Component {
   getMore () {
     axios.get(config.api + 'post?$sort[time]=-1&score[$gt]=0&$skip=' + (this.state.num * 10)).then(d => {
       this.setState({ num: this.state.num + 1, posts: [...this.state.posts, ...d.data.data] })
+      console.log(this.state)
     })
   }
 

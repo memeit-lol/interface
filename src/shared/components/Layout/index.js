@@ -93,6 +93,7 @@ export default class App extends Component {
       <Menu theme='dark' defaultSelectedKeys={[]} style={{ lineHeight: '64px' }}>
         <Menu.Item key='1' onClick={this.logout.bind(this)}>Logout</Menu.Item>
         <Menu.Item key='2' onClick={() => this.props.history.push('/write')}>Editor</Menu.Item>
+        <Menu.Item key='3' onClick={() => this.props.history.push('/@'+this.props.app.username)}>Profile</Menu.Item>
       </Menu>
     ) : (
       <Menu theme='dark' defaultSelectedKeys={[]} style={{ lineHeight: '64px' }}>
